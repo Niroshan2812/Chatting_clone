@@ -13,7 +13,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     </View>
   );
 }
-
+//
 const styles = StyleSheet.create({
   container: {
     flex: 1,

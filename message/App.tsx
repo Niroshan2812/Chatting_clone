@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import React, {useEffect} from 'react';
+import {OverlayProvider, Chat, ChannelList}from 'stream-chat-expo';
 import {StreamChat} from'stream-chat';
 import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
@@ -14,20 +15,27 @@ export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
 
-useEffect(()=>{
-const connectUser = async ()=>{
-  await client.connectUser(
+useEffect(()=> {
+  const connectUser = async ()=>{
+    await client.connectUser(
     {
-      id:'niroshan',
-      name: 'Jim Lahey', 
-      image: 'https://i.imgur.com/fR9Jz14.png',
+      id:"Niroshan",
+      name: "Niroshan Dh", 
+      image: "https://i.imgur.com/fR9Jz14.png",
     },
-    client.devToken('niroshan'),
-  );
-  console.log('User connected');
-};
-connectUser();
-},[])
+     client.devToken('niroshan')
+    );
+
+    //Create a channel
+    const channel =  client.channel("messaging", "notjustdev",{
+      name:"notJust.dev",
+    });
+    await channel.watch();
+  };
+  connectUser();
+
+  return ()=>client.disconnectUser();
+},[]);
 
 
   if (!isLoadingComplete) {
@@ -35,7 +43,13 @@ connectUser();
   } else {
     return (
       <SafeAreaProvider>
-        <Navigation colorScheme={colorScheme} />
+        <OverlayProvider>
+          <Chat client={client}>
+            {/*<Navigation colorScheme={colorScheme} />  */}
+            <ChannelList/>
+            
+        </Chat>
+        </OverlayProvider>
         <StatusBar />
       </SafeAreaProvider>
     
